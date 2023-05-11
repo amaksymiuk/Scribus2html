@@ -7,4 +7,4 @@ Typical lifecycle of a publication is as follows: author gives typesetter some s
 
 Ah, it was really depressing circumstance for me.
 
-Recently I decided to definitely solve this shortcoming. This repository is a result of my efforts: single step converter from Scribus .sla file format to .html.
+Recently I decided to definitely solve this shortcoming. This repository is a result of my efforts: single step converter from Scribus .sla file format to .html. Once you have .html, you can have everything: .odt, .doc, .rtf, ...
