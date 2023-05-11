@@ -6,7 +6,7 @@
  * PHP class for extraction formatted text from Scribus publication
  * Copyright (c) Aleksander Maksymiuk, info@setpro.net.pl
  * Last change: 2023-05-11, 09:25
- * License: Creative Commons, Attribution-ShareAlike
+ * License: GPL v. 3.0
  *
  * README
  * ------
