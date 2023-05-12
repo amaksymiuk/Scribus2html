@@ -14,7 +14,7 @@
  * installed).
  * This script is a complete command line tool - you only need to adjust its
  * first line with correct interpreter and give the file executable permission.
- * Run it in terminal as
+ * Run it within terminal as
  *   ./Scribus2html.php <scribus-file-name>.sla
 */
 
