@@ -1,4 +1,5 @@
 # Scribus2html
+
 PHP class for extraction formatted text from Scribus publication.
 
 Scribus is an open source Desktop Publishing application. I started using it many years ago, however Scribus disappointed me with one thing: the lack of a simple way to export formatted text from the final publication.
