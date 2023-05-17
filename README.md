@@ -19,5 +19,6 @@ export formatted text; only the text stripped of format may be extracted.
 Ah, it was really depressing circumstance for me.
 
 In May, 2023, I decided to definitely solve this shortcoming. This repository
-is a result of my efforts: single step converter from Scribus .sla file format
-to .html. Once you have .html, you can have everything: .odt, .doc, .rtf, ...
+is a result of my efforts: single step converter from Scribus `.sla` file
+format to `.html`. Once you have `.html`, you can have everything: `.odt`,
+`.doc`, `.rtf`, ...
