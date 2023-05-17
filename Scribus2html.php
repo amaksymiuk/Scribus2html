@@ -1,19 +1,17 @@
 #!/usr/bin/php
 <?php
-#!/usr/bin/php <- she-bang for my Ubuntu
-#!/c/PHP/php.exe <- she-bang for my "Git-Bash" console under Windows
 /**
  * PHP class for extraction formatted text from Scribus publication
- * Copyright (c) Aleksander Maksymiuk, info@setpro.net.pl
  * 
- * Quick README
- * ------------
+ * Quick start
+ * ----------------------------------------------------------------------------
  * This script requires PHP with XML support (i.e. xml, xmlreader modules
  * installed).
  * This script is a complete command line tool - you only need to adjust its
  * first line with correct interpreter and give the file executable permission.
  * Run it within terminal as
  *   ./Scribus2html.php <scribus-file-name>.sla
+ * ----------------------------------------------------------------------------
 */
 
 class Scribus2html {

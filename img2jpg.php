@@ -1,10 +1,12 @@
 <?php
 /**
- * Simple wrapper over ImageMagick
+ * Simple wrapper for ImageMagick
  *
- * Scribus publication can link many types of images: tiff, eps, ps, pdf, ...
- * we need specialized external application in order to convert, normalize,
- * and use those images in final web document
+ * Scribus publication links many types of images: tiff, eps, ps, pdf, etc.
+ * In order to use images in final web document, we need to do two things:
+ * - convert images to format understandable by web browser,
+ * - normalize images to reasonable sizes.
+ * For the above purposes I use ImageMagick graphical application.
 */
 
 class img2jpg {
