@@ -29,7 +29,7 @@ Get both files `img2jpg.php` and `Scribus2html.php` to your local system, give
 the latter executable permission. Maybe you will also need to adjust first line
 of `Scribus2html.php` with correct path to PHP interpreter, however the default
 `#!/usr/bin/php` should be fine for most Linux distributions. Run terminal,
-change dir to the location of both scripts, and execute the command
+change dir to the location of both scripts, and execute the command:
 
 ```
 ./Scribus2html.php path/to/your_scribus_file.sla
