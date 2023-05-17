@@ -41,7 +41,7 @@ class img2jpg {
     }
 
     public function run() {
-        $output = array();
+        $output = [];
         $exit_code = 0;
         exec($this->cmd, $output, $exit_code);
         return ($exit_code == 0);
@@ -58,7 +58,7 @@ class img2jpg {
 
     static public function isAvail() {
         $retval = false;
-        $output = array();
+        $output = [];
         $exit_code = 0;
         exec(self::CMD_CHECK, $output, $exit_code);
         if (!empty($output)) {
