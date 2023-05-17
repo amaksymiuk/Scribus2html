@@ -31,9 +31,9 @@ of `Scribus2html.php` with correct path to PHP interpreter, however the default
 `#!/usr/bin/php` should be fine for most Linux distributions. Run terminal,
 change dir to the location of both scripts, and execute the command
 
-    ~~~~
-    ./Scribus2html.php path/to/your_scribus_file.sla
-    ~~~~
+```
+./Scribus2html.php path/to/your_scribus_file.sla
+```
 
 ## Possible problems
 
