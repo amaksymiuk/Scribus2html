@@ -51,6 +51,6 @@ not have. If you run the above command in Linux terminal and see error like
 XML (xml, xmlreader), you need to add those modules manually.
 
 The script also takes advantage of ImageMagick application in order to convert
-images used in publication into format understandable by web browser. If you
-want to generate final `.html` file with images, install ImageMagick in your
-local system.
+images used in Scribus publication into format understandable by web browser.
+If you want to generate final `.html` file with images, install ImageMagick in
+your local system.
