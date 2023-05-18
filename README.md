@@ -35,6 +35,17 @@ change dir to the location of both scripts, and execute the command:
 ./Scribus2html.php path/to/your_scribus_file.sla
 ```
 
+### How to use this script under Windows
+
+This is my personal recipe. Under Windows I use „Git Bash” console that gives
+me Linux-like feel, look, and behavior. The only thing that needs to be changed
+in `Scribus2html.php` script is its first line: `#!/c/PHP/php.exe`, where
+`C:\PHP` is the directory with PHP interpreter.
+
 ## Possible problems
 
-To be continued...
+`Scribus2html.php` script requires PHP with XML support. PHP distributions for
+Windows have XML support enabled by default, while distributions for Linux may
+not have. If you run the above command in Linux terminal and see error like
+„XMLReader class not found”, it means that your PHP lacks modules supporting
+XML (xml, xmlreader), you need to add those modules manually.
