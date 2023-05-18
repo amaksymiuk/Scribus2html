@@ -1,6 +1,6 @@
 <?php
 /**
- * Simple wrapper for ImageMagick
+ * Simple wrapper for ImageMagick.
  *
  * Scribus publication links many types of images: tiff, eps, ps, pdf, etc.
  * In order to use images in final web document, we need to do two things:

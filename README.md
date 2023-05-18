@@ -1,6 +1,6 @@
 # Scribus2html
 
-PHP class for extraction formatted text from Scribus publication.
+PHP class for conversion Scribus publication to HTML format.
 
 ## Short history
 
@@ -49,3 +49,8 @@ Windows have XML support enabled by default, while distributions for Linux may
 not have. If you run the above command in Linux terminal and see error like
 „XMLReader class not found”, it means that your PHP lacks modules supporting
 XML (xml, xmlreader), you need to add those modules manually.
+
+The script also takes advantage of ImageMagick application in order to convert
+images used in publication into format understandable by web browser. If you
+want to generate final `.html` file with images, install ImageMagick in your
+local system.

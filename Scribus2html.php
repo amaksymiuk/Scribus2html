@@ -1,16 +1,16 @@
 #!/usr/bin/php
 <?php
 /**
- * PHP class for extraction formatted text from Scribus publication
+ * PHP class for conversion Scribus publication to HTML format.
+ * Aleksander Maksymiuk, <am@setpro.pl>
  * 
  * Quick start
  * ----------------------------------------------------------------------------
- * This script requires PHP with XML support (i.e. xml, xmlreader modules
- * installed).
- * This script is a complete command line tool - you only need to adjust its
- * first line with correct interpreter and give the file executable permission.
+ * This script requires PHP with XML support.
+ * The script is a complete command line tool; verify that first line contains
+ * correct path to PHP interpreter and give the file executable permission.
  * Run it within terminal as
- *   ./Scribus2html.php <scribus-file-name>.sla
+ *   ./Scribus2html.php path/to/your_scribus_file.sla
  * ----------------------------------------------------------------------------
 */
 
@@ -49,7 +49,7 @@ class Scribus2html {
         'img-dir-rel' => 'images(Scribus2html)',
         'img-max-width' => '640px',
         'img-max-height' => '512px',
-        // styling html tags
+        // styling some html tags
         'html-tag-style' => [
             'pre' => [
                 'font-weight' => 'bold',
