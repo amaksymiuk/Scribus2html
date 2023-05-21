@@ -90,6 +90,8 @@ class Scribus2html {
             $this->sla_parts = pathinfo($this->sla);
             $this->xml = new XMLReader();
             $this->xml->open($this->sla, 'UTF-8', LIBXML_NOBLANKS);
+            // parse user's options
+            $this->processConfig();
             // add to config some useful constants
             $this->conf['scribus-soft-hyph'] = iconv('CP1250', 'UTF-8', chr(173) . chr(173));
             $this->conf['html-tab-fake'] = '<!--tab--> ';
@@ -508,6 +510,21 @@ class Scribus2html {
             $style['margin-left'] = number_format($left, 2, '.', '') . 'pt';
         }
         return $style;
+    }
+
+    protected function processConfig() {
+        $parts = pathinfo(__FILE__);
+        $ini = $parts['dirname'] . '/' . $parts['filename'] . '.ini';
+        if (file_exists($ini)) {
+            if (($conf = parse_ini_file($ini, true)) !== false) {
+                foreach ($conf as $key => $val) {
+                    if (empty($val) && ($val != 0)) {
+                        unset($conf[$key]);
+                    }
+                }
+                $this->conf = array_merge($this->conf, $conf);
+            }
+        }
     }
 
     protected function buildStyleInline($style) {

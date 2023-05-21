@@ -25,11 +25,12 @@ format to `.html`. Once you have `.html`, you can have everything: `.odt`,
 
 ## Usage
 
-Get both files `img2jpg.php` and `Scribus2html.php` to your local system, give
-the latter executable permission. Maybe you will also need to adjust first line
-of `Scribus2html.php` with correct path to PHP interpreter, however the default
-`#!/usr/bin/php` should be fine for most Linux distributions. Run terminal,
-change dir to the location of both scripts, and execute the command:
+Get files `img2jpg.php`, `Scribus2html.ini`, and `Scribus2html.php` to your
+local system, give the latter executable permission. Maybe you will also need
+to adjust first line of `Scribus2html.php` with correct path to PHP
+interpreter, however the default `#!/usr/bin/php` should be fine for most Linux
+distributions. Run terminal, change dir to the location of both scripts, and
+execute the command:
 
 ```
 ./Scribus2html.php path/to/your_scribus_file.sla
@@ -54,3 +55,7 @@ The script also takes advantage of ImageMagick application in order to convert
 images used in Scribus publication into format understandable by web browser.
 If you want to generate final `.html` file with images, install ImageMagick in
 your local system.
+
+## Changing run options
+
+Open, read, and edit the file `Scribus2html.ini`
