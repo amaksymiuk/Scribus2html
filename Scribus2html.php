@@ -28,7 +28,10 @@ class Scribus2html {
         'text-align' => 1,
         'line-height' => 1,
         'text-indent' => 1,
-        'margin-*' => 1,
+        'margin-left' => 1,
+        'margin-top' => 1,
+        'margin-right' => 1,
+        'margin-bottom' => 1,
         // character attributes (1/0 - include/exclude)
         'attr-bold' => 1,
         'attr-italic' => 1,
@@ -484,7 +487,7 @@ class Scribus2html {
 
     protected function processMarginTop($top) {
         $style = [];
-        if ($this->conf['margin-*'] && isset($top)) {
+        if ($this->conf['margin-top'] && isset($top)) {
             $style['margin-top'] = number_format($top, 2, '.', '') . 'pt';
         }
         return $style;
@@ -492,7 +495,7 @@ class Scribus2html {
 
     protected function processMarginRight($right) {
         $style = [];
-        if ($this->conf['margin-*'] && isset($right)) {
+        if ($this->conf['margin-right'] && isset($right)) {
             $style['margin-right'] = number_format($right, 2, '.', '') . 'pt';
         }
         return $style;
@@ -500,7 +503,7 @@ class Scribus2html {
 
     protected function processMarginBottom($bottom) {
         $style = [];
-        if ($this->conf['margin-*'] && isset($bottom)) {
+        if ($this->conf['margin-bottom'] && isset($bottom)) {
             $style['margin-bottom'] = number_format($bottom, 2, '.', '') . 'pt';
         }
         return $style;
@@ -508,7 +511,7 @@ class Scribus2html {
 
     protected function processMarginLeft($left) {
         $style = [];
-        if ($this->conf['margin-*'] && isset($left)) {
+        if ($this->conf['margin-left'] && isset($left)) {
             $style['margin-left'] = number_format($left, 2, '.', '') . 'pt';
         }
         return $style;
