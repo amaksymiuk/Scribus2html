@@ -52,8 +52,6 @@ class Scribus2html {
         'img-cnv-ext' => 'jpg',
         'img-cnv-size' => 1024, // px
         'img-dir-rel' => 'images(Scribus2html)',
-        'img-max-width' => '640px',
-        'img-max-height' => '512px',
         // styling some html tags
         'html-tag-style' => [
             'pre' => [
@@ -64,6 +62,8 @@ class Scribus2html {
             ],
             'img' => [
                 'display' => 'block',
+                'max-width' => '640px',
+                'max-height' => '512px',
                 'margin' => '16px 0 16px 0',
                 'padding' => '16px 16px 16px 16px',
                 'border' => 'solid 1px #c8c8c8',
@@ -304,16 +304,13 @@ class Scribus2html {
             );
             if ($cnv->run()) {
                 // add full-fledged image link
-                $style = [
-                    'max-width' => $this->conf['img-max-width'],
-                    'max-height' => $this->conf['img-max-height'],
-                ];
+                $style = [];
                 if (isset($this->conf['html-tag-style']['img']) && !$this->conf['style-sheet']) {
                     $style = array_merge($this->conf['html-tag-style']['img'], $style);
                 }
                 $this->data[$page]['iframes'][] = '<img src="' . $this->conf['img-dir-rel'] . '/' . $parts['filename'] . '.' .
                     $this->conf['img-cnv-ext'] . '" alt="' . $parts['filename'] . '" title="' . $parts['filename'] .
-                    '" ' . $this->buildStyleInline($style) .
+                    '"' . (!empty($style) ? ' ' . $this->buildStyleInline($style) : '') .
                 '>';
             } else {
                 // something went wrong - add image info alone
