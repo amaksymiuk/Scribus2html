@@ -26,7 +26,7 @@ format to `.html`. Once you have `.html`, you can have everything: `.odt`,
 ## Usage
 
 Get files `img2jpg.php`, `Scribus2html.ini`, and `Scribus2html.php` to your
-local system, give the latter executable permission. Maybe you will also need
+local system, give the last one executable permission. Maybe you will also need
 to adjust first line of `Scribus2html.php` with correct path to PHP
 interpreter, however the default `#!/usr/bin/php` should be fine for most Linux
 distributions. Run terminal, change dir to the location of both scripts, and
