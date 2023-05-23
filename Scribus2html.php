@@ -45,7 +45,9 @@ class Scribus2html {
         'hard-hyph' => 1, // 1/0 - preserve/convert-to-ordinary
         'tab-as-comment' => 0, // 1/0 - convert-to-table/ignore
         // image parameters
+        'img-magick' => null, // initialized at runtime
         'img-cnv-ext' => 'jpg',
+        'img-cnv-size' => 1024, // px
         'img-dir-rel' => 'images(Scribus2html)',
         'img-max-width' => '640px',
         'img-max-height' => '512px',
@@ -294,7 +296,7 @@ class Scribus2html {
             $cnv = new img2jpg(
                 $this->sla_parts['dirname'] . '/' . $image,
                 $this->conf['img-dir-full'] . '/' . $parts['filename'] . '.' . $this->conf['img-cnv-ext'],
-                1024,
+                $this->conf['img-cnv-size'],
                 false
             );
             if ($cnv->run()) {
