@@ -54,6 +54,8 @@ class Scribus2html {
         'img-cnv-ext' => 'jpg',
         'img-cnv-size' => 1024, // px
         'img-dir-rel' => 'images(Scribus2html)',
+        'img-alt' => 1,
+        'img-title' => 1,
         // styling some html tags
         'html-tag-style' => [
             'pre' => [
@@ -296,6 +298,9 @@ class Scribus2html {
         $image = $this->xml->getAttribute('PFILE');
         if ($this->conf['img-magick']) {
             $parts = pathinfo($image);
+            // fill values for attributes
+            $parts['alt'] = ($this->conf['img-alt'] ? htmlspecialchars($parts['filename']) : '');
+            $parts['title'] = ($this->conf['img-title'] ? htmlspecialchars($parts['filename']) : '');
             echo '... ' . $parts['basename'] . PHP_EOL;
             // convert and normalize image
             $cnv = new img2jpg(
@@ -311,8 +316,8 @@ class Scribus2html {
                     $style = array_merge($this->conf['html-tag-style']['img'], $style);
                 }
                 $this->data[$page]['iframes'][] = '<img src="' . $this->conf['img-dir-rel'] . '/' . $parts['filename'] . '.' .
-                    $this->conf['img-cnv-ext'] . '" alt="' . $parts['filename'] . '" title="' . $parts['filename'] .
-                    '"' . (!empty($style) ? ' ' . $this->buildStyleInline($style) : '') .
+                    $this->conf['img-cnv-ext'] . '" alt="' . $parts['alt'] . '" title="' . $parts['title'] . '"' .
+                    (!empty($style) ? ' ' . $this->buildStyleInline($style) : '') .
                 '>';
             } else {
                 // something went wrong - add image info alone
