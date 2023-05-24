@@ -41,7 +41,7 @@ execute the command:
 This is my personal recipe. Under Windows I use „Git Bash” console that gives
 me Linux-like feel, look, and behavior. The only thing that needs to be changed
 in `Scribus2html.php` script is its first line: `#!/c/PHP/php.exe`, where
-`C:\PHP` is the directory with PHP interpreter.
+`C:\PHP` is my directory with PHP interpreter.
 
 ## Possible problems
 
