@@ -35,6 +35,8 @@ class Scribus2html {
         // character attributes (1/0 - include/exclude)
         'attr-bold' => 1,
         'attr-italic' => 1,
+        'attr-light' => 0,
+        'attr-condensed' => 0,
         'attr-underline' => 1,
         'attr-strike' => 1,
         'attr-superscript' => 1,
@@ -377,11 +379,15 @@ class Scribus2html {
             }
             if (preg_match('#light#i', $name)) {
                 $name = preg_replace('#\s*light\s*#i', '', $name);
-                $style['font-weight'] = 'lighter';
+                if ($this->conf['attr-light']) {
+                    $style['font-weight'] = 'lighter';
+                }
             }
             if (preg_match('#condensed#i', $name)) {
                 $name = preg_replace('#\s*condensed\s*#i', '', $name);
-                $style['font-stretch'] = 'condensed';
+                if ($this->conf['attr-condensed']) {
+                    $style['font-stretch'] = 'condensed';
+                }
             }
             // add typeface name
             if ($this->conf['font-family']) {
