@@ -480,7 +480,7 @@ class Scribus2html {
     protected function processLineHeightMode($mode) {
         $style = [];
         if ($this->conf['line-height'] && isset($mode) && ($mode == 1)) {
-            $style['line-height'] = 'auto';
+            $style['line-height'] = 'normal';
         }
         return $style;
     }
