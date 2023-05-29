@@ -44,6 +44,7 @@ class Scribus2html {
         'attr-allcaps' => 1,
         'attr-smallcaps' => 1,
         'attr-shadow' => 1,
+        'attr-old-tags' => 0,
         // character removal/conversion
         'soft-hyph' => 0, // 1/0 - preserve/remove
         'hard-space' => 1, // 1/0 - preserve/convert-to-ordinary
@@ -83,6 +84,8 @@ class Scribus2html {
     protected $meta = [];
     protected $data = [];
     protected $stylesheet = [];
+
+    protected $oldtags = [];
 
     protected $stat = [
         'styles' => 0,
@@ -215,16 +218,29 @@ class Scribus2html {
                     if (!$this->conf['soft-hyph']) {
                         $chunk = str_replace($this->conf['scribus-soft-hyph'], '', $chunk);
                     }
+                    // text attributes as standalone tags
+                    $this->oldtags = [];
                     $style = array_merge(
                         $this->processFontFamily($frm->getAttribute('FONT')),
                         $this->processFontSize($frm->getAttribute('FONTSIZE')),
                         $this->processTextFeatures($frm->getAttribute('FEATURES'))
                     );
-                    $tag_open = '';
-                    $tag_close = '';
+                    $tags_open = '';
+                    $tags_close = '';
+                    if ($this->conf['attr-old-tags'] && !empty($this->oldtags)) {
+                        foreach ($this->oldtags as $tag) {
+                            $tags_open .= '<' . $tag . '>';
+                        }
+                        foreach (array_reverse($this->oldtags) as $tag) {
+                            $tags_close .= '</' . $tag . '>';
+                        }
+                    }
+                    // new styling
+                    $span_open = '';
+                    $span_close = '';
                     if (!empty($style)) {
-                        $tag_open = '<span ' . $this->buildStyleInline($style) . '>';
-                        $tag_close = '</span>';
+                        $span_open = '<span ' . $this->buildStyleInline($style) . '>';
+                        $span_close = '</span>';
                     }
                     $chunk = htmlspecialchars($chunk);
                     // convert soft hyphen to html entity
@@ -232,7 +248,7 @@ class Scribus2html {
                         $chunk = str_replace($this->conf['scribus-soft-hyph'], '&shy;', $chunk);
                     }
                     // glue text to the current paragraph
-                    $paragraphs[$i] .= $tag_open . $chunk . $tag_close;
+                    $paragraphs[$i] .= $span_open . $tags_open . $chunk . $tags_close . $span_close;
                     break;
                 case 'para':
                 case 'trail':
@@ -257,13 +273,13 @@ class Scribus2html {
                     if (!empty($style)) {
                         $attrs[] = $this->buildStyleInline($style);
                     }
-                    $tag_open = '<p>';
-                    $tag_close = '</p>';
+                    $p_open = '<p>';
+                    $p_close = '</p>';
                     if (!empty($attrs)) {
-                        $tag_open = '<p ' . implode(' ', $attrs) . '>';
+                        $p_open = '<p ' . implode(' ', $attrs) . '>';
                     }
                     // close current paragraph...
-                    $paragraphs[$i] = $tag_open . $paragraphs[$i] . $tag_close;
+                    $paragraphs[$i] = $p_open . $paragraphs[$i] . $p_close;
                     // ... and start new one
                     if ($frm->name == 'para') {
                         $paragraphs[++$i] = '';
@@ -373,13 +389,21 @@ class Scribus2html {
             if (preg_match('#bold#i', $name)) {
                 $name = preg_replace('#\s*bold\s*#i', '', $name);
                 if ($this->conf['attr-bold']) {
-                    $style['font-weight'] = 'bold';
+                    if ($this->conf['attr-old-tags']) {
+                        $this->oldtags[] = 'b';
+                    } else {
+                        $style['font-weight'] = 'bold';
+                    }
                 }
             }
             if (preg_match('#italic#i', $name)) {
                 $name = preg_replace('#\s*italic\s*#i', '', $name);
                 if ($this->conf['attr-italic']) {
-                    $style['font-style'] = 'italic';
+                    if ($this->conf['attr-old-tags']) {
+                        $this->oldtags[] = 'i';
+                    } else {
+                        $style['font-style'] = 'italic';
+                    }
                 }
             }
             if (preg_match('#light#i', $name)) {
@@ -421,18 +445,34 @@ class Scribus2html {
         $style = [];
         if (isset($features)) {
             if ($this->conf['attr-underline'] && preg_match('#underline#i', $features)) {
-                $style['text-decoration'][] = 'underline';
+                if ($this->conf['attr-old-tags']) {
+                    $this->oldtags[] = 'u';
+                } else {
+                    $style['text-decoration'][] = 'underline';
+                }
             }
             if ($this->conf['attr-strike'] && preg_match('#strike#i', $features)) {
-                $style['text-decoration'][] = 'line-through';
+                if ($this->conf['attr-old-tags']) {
+                    $this->oldtags[] = 's';
+                } else {
+                    $style['text-decoration'][] = 'line-through';
+                }
             }
             if ($this->conf['attr-superscript'] && preg_match('#superscript#i', $features)) {
-                $style['vertical-align'] = 'super';
-                $style['font-size'] = 'smaller';
+                if ($this->conf['attr-old-tags']) {
+                    $this->oldtags[] = 'sup';
+                } else {
+                    $style['vertical-align'] = 'super';
+                    $style['font-size'] = 'smaller';
+                }
             }
             if ($this->conf['attr-subscript'] && preg_match('#subscript#i', $features)) {
-                $style['vertical-align'] = 'sub';
-                $style['font-size'] = 'smaller';
+                if ($this->conf['attr-old-tags']) {
+                    $this->oldtags[] = 'sub';
+                } else {
+                    $style['vertical-align'] = 'sub';
+                    $style['font-size'] = 'smaller';
+                }
             }
             if ($this->conf['attr-allcaps'] && preg_match('#(?<!sm)allcaps#i', $features)) {
                 $style['text-transform'][] = 'uppercase';
