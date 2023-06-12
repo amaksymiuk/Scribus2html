@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+
 /**
  * PHP class for conversion Scribus publication to HTML format.
  * Aleksander Maksymiuk, <am@setpro.pl>
@@ -12,10 +13,12 @@
  * Run it within terminal as
  *   ./Scribus2html.php path/to/your_scribus_file.sla
  * ----------------------------------------------------------------------------
-*/
+ */
 
-class Scribus2html {
+namespace Scribus2html;
 
+class Scribus2html
+{
     // how to generate html file
     protected $conf = [
         // Scribus items to process (text frames are always processed)
@@ -95,13 +98,14 @@ class Scribus2html {
         'paragraphs' => 0,
     ];
 
-    public function __construct($sla_name) {
+    public function __construct($sla_name)
+    {
         if (!empty($sla_name) && file_exists($sla_name)) {
-            echo 'Initializing' . PHP_EOL;
+            echo 'Initializing' . \PHP_EOL;
             $this->sla = $sla_name;
             $this->sla_parts = pathinfo($this->sla);
-            $this->xml = new XMLReader();
-            $this->xml->open($this->sla, 'UTF-8', LIBXML_NOBLANKS);
+            $this->xml = new \XMLReader();
+            $this->xml->open($this->sla, 'UTF-8', \LIBXML_NOBLANKS);
             // parse user's options
             $this->processConfig();
             // add to config some useful constants
@@ -116,28 +120,29 @@ class Scribus2html {
                 $this->conf['img-dir-full'] = $this->sla_parts['dirname'] . '/' . $this->conf['img-dir-rel'];
                 if (!file_exists($this->conf['img-dir-full']) || !is_dir($this->conf['img-dir-full'])) {
                     if (mkdir($this->conf['img-dir-full'])) {
-                        echo '... ' . $this->conf['img-dir-full'] . PHP_EOL;
+                        echo '... ' . $this->conf['img-dir-full'] . \PHP_EOL;
                     }
                 }
             }
         }
     }
 
-    public function run() {
-        if (!empty($this->xml) && ($this->xml instanceof XMLReader)) {
-            echo 'Parsing ' . $this->sla . PHP_EOL;
+    public function run()
+    {
+        if (!empty($this->xml) && ($this->xml instanceof \XMLReader)) {
+            echo 'Parsing ' . $this->sla . \PHP_EOL;
             // iterate over Scribus main items
             while ($this->xml->read()) {
-                if ($this->xml->nodeType != XMLReader::ELEMENT) {
+                if ($this->xml->nodeType != \XMLReader::ELEMENT) {
                     continue;
                 }
                 // check file version: at least 1.4.6 required
                 if ($this->xml->name == 'SCRIBUSUTF8NEW') {
                     $ver = explode('.', $this->xml->getAttribute('Version'));
                     if (($ver[0] < 1) || ($ver[1] < 4) || ($ver[2] < 6)) {
-                        echo 'Scribus file version too old (' . implode('.', $ver) . ')' . PHP_EOL;
-                        echo '... save your file as 1.4.6 or higher in order to use this tool' . PHP_EOL;
-                        echo 'Done' . PHP_EOL;
+                        echo 'Scribus file version too old (' . implode('.', $ver) . ')' . \PHP_EOL;
+                        echo '... save your file as 1.4.6 or higher in order to use this tool' . \PHP_EOL;
+                        echo 'Done' . \PHP_EOL;
                         exit(1);
                     }
                 }
@@ -171,16 +176,17 @@ class Scribus2html {
                 }
             }
             $this->xml->close();
-            echo '... ' . $this->stat['styles'] . ' global styles' . PHP_EOL;
-            echo '... ' . $this->stat['rframes'] . ' render (LaTeX) frames' . PHP_EOL;
-            echo '... ' . $this->stat['iframes'] . ' image frames' . PHP_EOL;
-            echo '... ' . $this->stat['tframes'] . ' text frames' . PHP_EOL;
-            echo '... ' . $this->stat['paragraphs'] . ' paragraphs' . PHP_EOL;
+            echo '... ' . $this->stat['styles'] . ' global styles' . \PHP_EOL;
+            echo '... ' . $this->stat['rframes'] . ' render (LaTeX) frames' . \PHP_EOL;
+            echo '... ' . $this->stat['iframes'] . ' image frames' . \PHP_EOL;
+            echo '... ' . $this->stat['tframes'] . ' text frames' . \PHP_EOL;
+            echo '... ' . $this->stat['paragraphs'] . ' paragraphs' . \PHP_EOL;
             $this->save();
         }
     }
 
-    protected function processStyle() {
+    protected function processStyle()
+    {
         $this->stat['styles']++;
         $class = $this->processClass($this->xml->getAttribute('NAME'));
         $this->stylesheet[$class] = array_merge(
@@ -196,18 +202,19 @@ class Scribus2html {
         );
     }
 
-    protected function processTFrame() {
+    protected function processTFrame()
+    {
         $this->stat['tframes']++;
         // get page the frame belongs to
         $page = intval($this->xml->getAttribute('OwnPage'));
         // start subreader for processing frame items
-        $frm = new XMLReader();
-        $frm->XML($this->xml->readOuterXml(), 'UTF-8', LIBXML_NOBLANKS);
+        $frm = new \XMLReader();
+        $frm->XML($this->xml->readOuterXml(), 'UTF-8', \LIBXML_NOBLANKS);
         $paragraphs = [];
         $i = 0;
         $paragraphs[$i] = '';
         while ($frm->read()) {
-            if ($frm->nodeType != XMLReader::ELEMENT) {
+            if ($frm->nodeType != \XMLReader::ELEMENT) {
                 continue;
             }
             switch ($frm->name) {
@@ -306,7 +313,8 @@ class Scribus2html {
         $this->data[$page]['tframes'][] = $paragraphs;
     }
 
-    protected function processIFrame() {
+    protected function processIFrame()
+    {
         $this->stat['iframes']++;
         // get page the frame belongs to
         $page = intval($this->xml->getAttribute('OwnPage'));
@@ -317,7 +325,7 @@ class Scribus2html {
             // fill values for attributes
             $parts['alt'] = ($this->conf['img-alt'] ? htmlspecialchars($parts['filename']) : '');
             $parts['title'] = ($this->conf['img-title'] ? htmlspecialchars($parts['filename']) : '');
-            echo '... ' . $parts['basename'] . PHP_EOL;
+            echo '... ' . $parts['basename'] . \PHP_EOL;
             // convert and normalize image
             $cnv = new img2jpg(
                 $this->sla_parts['dirname'] . '/' . $image,
@@ -341,7 +349,10 @@ class Scribus2html {
                 if (isset($this->conf['html-tag-style']['pre']) && !$this->conf['style-sheet']) {
                     $style = $this->conf['html-tag-style']['pre'];
                 }
-                $this->data[$page]['iframes'][] = '<pre' . (!empty($style) ? ' ' . $this->buildStyleInline($style) : '') . '>[IMAGE[' . $image . ']]</pre>';
+                $this->data[$page]['iframes'][] = '<pre' . (!empty($style) ?
+                    ' ' . $this->buildStyleInline($style) :
+                    ''
+                ) . '>[IMAGE[' . $image . ']]</pre>';
             }
             unset($cnv);
         } else {
@@ -350,20 +361,24 @@ class Scribus2html {
             if (isset($this->conf['html-tag-style']['pre']) && !$this->conf['style-sheet']) {
                 $style = $this->conf['html-tag-style']['pre'];
             }
-            $this->data[$page]['iframes'][] = '<pre' . (!empty($style) ? ' ' . $this->buildStyleInline($style) : '') . '>[IMAGE[' . $image . ']]</pre>';
+            $this->data[$page]['iframes'][] = '<pre' . (!empty($style) ?
+                ' ' . $this->buildStyleInline($style) :
+                ''
+            ) . '>[IMAGE[' . $image . ']]</pre>';
         }
     }
 
-    protected function processRFrame() {
+    protected function processRFrame()
+    {
         $this->stat['rframes']++;
         // get page the frame belongs to
         $page = intval($this->xml->getAttribute('OwnPage'));
         // start subreader for processing frame items
-        $frm = new XMLReader();
-        $frm->XML($this->xml->readOuterXml(), 'UTF-8', LIBXML_NOBLANKS);
+        $frm = new \XMLReader();
+        $frm->XML($this->xml->readOuterXml(), 'UTF-8', \LIBXML_NOBLANKS);
         $code = '';
         while ($frm->read()) {
-            if ($frm->nodeType != XMLReader::ELEMENT) {
+            if ($frm->nodeType != \XMLReader::ELEMENT) {
                 continue;
             }
             if ($frm->name == 'LATEX') {
@@ -377,10 +392,14 @@ class Scribus2html {
         if (isset($this->conf['html-tag-style']['pre']) && !$this->conf['style-sheet']) {
             $style = $this->conf['html-tag-style']['pre'];
         }
-        $this->data[$page]['rframes'][] = '<pre' . (!empty($style) ? ' ' . $this->buildStyleInline($style) : '') . '>[LATEX[' . $code . ']]</pre>';
+        $this->data[$page]['rframes'][] = '<pre' . (!empty($style) ?
+            ' ' . $this->buildStyleInline($style) :
+            ''
+        ) . '>[LATEX[' . $code . ']]</pre>';
     }
 
-    protected function processFontFamily($name) {
+    protected function processFontFamily($name)
+    {
         $style = [];
         if (isset($name)) {
             $name = preg_replace('#\s*regular\s*#i', '', $name);
@@ -426,7 +445,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processFontSize($size) {
+    protected function processFontSize($size)
+    {
         $style = [];
         if ($this->conf['font-size'] && isset($size)) {
             $style['font-size'] = $size . 'pt';
@@ -434,14 +454,16 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processClass($name) {
+    protected function processClass($name)
+    {
         // adjust class name for html: exclude spaces, digit in front
         $name = str_replace(' ', '_', $name);
         $name = preg_replace('#^(\d)#', '_$1', $name);
         return $name;
     }
 
-    protected function processTextFeatures($features) {
+    protected function processTextFeatures($features)
+    {
         $style = [];
         if (isset($features)) {
             if ($this->conf['attr-underline'] && preg_match('#underline#i', $features)) {
@@ -487,7 +509,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processTextAlign($align) {
+    protected function processTextAlign($align)
+    {
         $style = [];
         if ($this->conf['text-align'] && isset($align)) {
             switch ($align) {
@@ -509,7 +532,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processLineHeight($height) {
+    protected function processLineHeight($height)
+    {
         $style = [];
         if ($this->conf['line-height'] && isset($height)) {
             $style['line-height'] = $height . 'pt';
@@ -517,7 +541,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processLineHeightMode($mode) {
+    protected function processLineHeightMode($mode)
+    {
         $style = [];
         if ($this->conf['line-height'] && isset($mode) && ($mode == 1)) {
             $style['line-height'] = 'normal';
@@ -525,7 +550,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processTextIndent($first) {
+    protected function processTextIndent($first)
+    {
         $style = [];
         if ($this->conf['text-indent'] && isset($first)) {
             $style['text-indent'] = number_format($first, 2, '.', '') . 'pt';
@@ -533,7 +559,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processMarginTop($top) {
+    protected function processMarginTop($top)
+    {
         $style = [];
         if ($this->conf['margin-top'] && isset($top)) {
             $style['margin-top'] = number_format($top, 2, '.', '') . 'pt';
@@ -541,7 +568,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processMarginRight($right) {
+    protected function processMarginRight($right)
+    {
         $style = [];
         if ($this->conf['margin-right'] && isset($right)) {
             $style['margin-right'] = number_format($right, 2, '.', '') . 'pt';
@@ -549,7 +577,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processMarginBottom($bottom) {
+    protected function processMarginBottom($bottom)
+    {
         $style = [];
         if ($this->conf['margin-bottom'] && isset($bottom)) {
             $style['margin-bottom'] = number_format($bottom, 2, '.', '') . 'pt';
@@ -557,7 +586,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processMarginLeft($left) {
+    protected function processMarginLeft($left)
+    {
         $style = [];
         if ($this->conf['margin-left'] && isset($left)) {
             $style['margin-left'] = number_format($left, 2, '.', '') . 'pt';
@@ -565,7 +595,8 @@ class Scribus2html {
         return $style;
     }
 
-    protected function processConfig() {
+    protected function processConfig()
+    {
         $parts = pathinfo(__FILE__);
         $ini = $parts['dirname'] . '/' . $parts['filename'] . '.ini';
         if (file_exists($ini)) {
@@ -580,7 +611,8 @@ class Scribus2html {
         }
     }
 
-    protected function buildStyleInline($style) {
+    protected function buildStyleInline($style)
+    {
         $retval = '';
         if (!empty($style)) {
             $inline = '';
@@ -592,71 +624,80 @@ class Scribus2html {
         return $retval;
     }
 
-    protected function buildStyleSheet($styles, $sel = '') {
+    protected function buildStyleSheet($styles, $sel = '')
+    {
         $retval = '';
         if (!empty($styles)) {
             foreach ($styles as $name => $def) {
-                $retval .= str_repeat(' ', 8) . $sel . $name . ' {' . PHP_EOL;
+                $retval .= str_repeat(' ', 8) . $sel . $name . ' {' . \PHP_EOL;
                 foreach ($def as $prop => $val) {
-                    $retval .= str_repeat(' ', 12) . $prop . ': ' . (is_array($val) ? implode(' ', $val) : $val) . ';' . PHP_EOL;
+                    $retval .= str_repeat(' ', 12) . $prop . ': ' . (is_array($val) ?
+                        implode(' ', $val) :
+                        $val
+                    ) . ';' . \PHP_EOL;
                 }
-                $retval .= str_repeat(' ', 8) . '}' . PHP_EOL;
+                $retval .= str_repeat(' ', 8) . '}' . \PHP_EOL;
             }
         }
         return $retval;
     }
 
-    protected function buildHtmlOpen() {
-        return '<!DOCTYPE html>' . PHP_EOL .
-        '<html>' . PHP_EOL .
-            '<head>' . PHP_EOL .
-                str_repeat(' ', 4) . '<meta charset="UTF-8">' . PHP_EOL .
+    protected function buildHtmlOpen()
+    {
+        return '<!DOCTYPE html>' . \PHP_EOL .
+        '<html>' . \PHP_EOL .
+            '<head>' . \PHP_EOL .
+                str_repeat(' ', 4) . '<meta charset="UTF-8">' . \PHP_EOL .
                 str_repeat(' ', 4) . '<title>' . (empty($this->meta['title']) ?
                     htmlspecialchars($this->sla_parts['filename'] . '.html') :
                     htmlspecialchars($this->meta['title'])
-                ) . '</title>' . PHP_EOL .
-                str_repeat(' ', 4) . '<meta name="author" content="' . htmlspecialchars($this->meta['author']) . '">' . PHP_EOL .
+                ) . '</title>' . \PHP_EOL .
+                str_repeat(' ', 4) . '<meta name="author" content="' . htmlspecialchars($this->meta['author']) . '">' . \PHP_EOL .
                 str_repeat(' ', 4) . '<meta name="description" content="' . (empty($this->meta['comment']) ?
                     '' :
                     htmlspecialchars($this->meta['comment']) . ' '
-                ) . 'Formatted text extracted from ' . htmlspecialchars($this->sla_parts['basename']) . ' by Scribus2html.php">' . PHP_EOL .
-                str_repeat(' ', 4) . '<meta name="keywords" content="scribus2html">' . PHP_EOL .
-                str_repeat(' ', 4) . '<meta name="viewport" content="width=device-width, initial-scale=1.0">' . PHP_EOL .
+                ) . 'Formatted text extracted from ' . htmlspecialchars($this->sla_parts['basename']) . ' by Scribus2html.php">' . \PHP_EOL .
+                str_repeat(' ', 4) . '<meta name="keywords" content="scribus2html">' . \PHP_EOL .
+                str_repeat(' ', 4) . '<meta name="viewport" content="width=device-width, initial-scale=1.0">' . \PHP_EOL .
                 ($this->conf['style-sheet'] ?
-                    str_repeat(' ', 4) . '<style>' . PHP_EOL .
-                        (isset($this->conf['html-tag-style']) ? $this->buildStyleSheet($this->conf['html-tag-style']) : '') .
-                        $this->buildStyleSheet($this->stylesheet, '.') .
-                    str_repeat(' ', 4) . '</style>' . PHP_EOL :
+                    str_repeat(' ', 4) . '<style>' . \PHP_EOL .
+                        (isset($this->conf['html-tag-style']) ?
+                            $this->buildStyleSheet($this->conf['html-tag-style']) :
+                            ''
+                        ) . $this->buildStyleSheet($this->stylesheet, '.') .
+                    str_repeat(' ', 4) . '</style>' . \PHP_EOL :
                     ''
                 ) .
-            '</head>' . PHP_EOL .
+            '</head>' . \PHP_EOL .
             '<body>' .
-        PHP_EOL;
+        \PHP_EOL;
     }
 
-    protected function buildHtmlClose() {
-        return '</body>' . PHP_EOL .
+    protected function buildHtmlClose()
+    {
+        return '</body>' . \PHP_EOL .
         '</html>';
     }
 
-    protected function save() {
+    protected function save()
+    {
         // sort data collection by page numbers
         ksort($this->data);
         // build plain html
         $html = $this->buildHtmlOpen();
         foreach ($this->data as $page => $frames) {
             // page info as a comment
-            $html .= '<!-- page ' . $page . ' -->' . PHP_EOL;
+            $html .= '<!-- page ' . $page . ' -->' . \PHP_EOL;
             // list images first...
             if (isset($frames['iframes'])) {
                 foreach ($frames['iframes'] as $image) {
-                    $html .= $image . PHP_EOL;
+                    $html .= $image . \PHP_EOL;
                 }
             }
             // ... then LaTeX items...
             if (isset($frames['rframes'])) {
                 foreach ($frames['rframes'] as $code) {
-                    $html .= $code . PHP_EOL;
+                    $html .= $code . \PHP_EOL;
                 }
             }
             // ... and finally text
@@ -669,34 +710,37 @@ class Scribus2html {
                         while ($i < $par_count) {
                             if ($tab_count = substr_count($paragraphs[$i], $this->conf['html-tab-fake'])) {
                                 $table = [];
-                                while (($i < $par_count) && (substr_count($paragraphs[$i], $this->conf['html-tab-fake']) == $tab_count)) {
+                                while (
+                                    ($i < $par_count) &&
+                                    (substr_count($paragraphs[$i], $this->conf['html-tab-fake']) == $tab_count)
+                                ) {
                                     $table[] = $paragraphs[$i];
                                     $i++;
                                 }
                                 if (count($table) > 1) {
                                     // yes, table encountered
-                                    $html .= '<table>' . PHP_EOL;
+                                    $html .= '<table>' . \PHP_EOL;
                                     foreach ($table as $row) {
                                         // convert paragraph to table row
                                         $row = preg_replace('#<p([^>]*?)>#', '<tr$1><td>', $row);
                                         $row = str_replace($this->conf['html-tab-fake'], '</td><td>', $row);
                                         $row = str_replace('</p>', '</td></tr>', $row);
-                                        $html .= $row . PHP_EOL;
+                                        $html .= $row . \PHP_EOL;
                                     }
-                                    $html .= '</table>' . PHP_EOL;
+                                    $html .= '</table>' . \PHP_EOL;
                                 } else {
                                     // no, single paragraph with tabs
-                                    $html .= $table[0] . PHP_EOL;
+                                    $html .= $table[0] . \PHP_EOL;
                                 }
                             } else {
-                                $html .= $paragraphs[$i] . PHP_EOL;
+                                $html .= $paragraphs[$i] . \PHP_EOL;
                                 $i++;
                             }
                         }
                     } else {
                         // ignore tabular data
                         foreach ($paragraphs as $par) {
-                            $html .= $par . PHP_EOL;
+                            $html .= $par . \PHP_EOL;
                         }
                     }
                 }
@@ -704,11 +748,11 @@ class Scribus2html {
         }
         $html .= $this->buildHtmlClose();
         $output = $this->sla_parts['dirname'] . '/' . $this->sla_parts['filename'] . '.html';
-        echo 'Writing ' . $output . PHP_EOL;
+        echo 'Writing ' . $output . \PHP_EOL;
         if (($size = file_put_contents($output, $html)) !== false) {
-            echo '... ' . $size . ' bytes' . PHP_EOL;
+            echo '... ' . $size . ' bytes' . \PHP_EOL;
         }
-        echo 'Done' . PHP_EOL;
+        echo 'Done' . \PHP_EOL;
     }
 
 }
