@@ -12,8 +12,7 @@
 
 namespace Scribus2html;
 
-class img2jpg
-{
+class img2jpg {
 
     const PATH_SEP = '/';
     const EXT_IN = '#^bmp|eps|gif|jpe?g|pdf|png|ps|svg|tiff?|webp|wmf$#i';
@@ -25,8 +24,7 @@ class img2jpg
 
     protected $output_size;
 
-    public function __construct($img_in, $img_out, $size_out = 1024, $force_jpg = true)
-    {
+    public function __construct($img_in, $img_out, $size_out = 1024, $force_jpg = true) {
         if (file_exists($img_in)) {
             $parts_in = pathinfo($img_in);
             if (isset($parts_in['extension']) && preg_match(self::EXT_IN, $parts_in['extension'])) {
@@ -45,16 +43,14 @@ class img2jpg
         }
     }
 
-    public function run()
-    {
+    public function run() {
         $output = [];
         $exit_code = 0;
         exec($this->cmd, $output, $exit_code);
         return ($exit_code == 0);
     }
 
-    public static function isPdf($file)
-    {
+    public static function isPdf($file) {
         $retval = false;
         $parts = pathinfo($file);
         if (isset($parts['extension']) && preg_match('#^pdf$#i', $parts['extension'])) {
@@ -63,8 +59,7 @@ class img2jpg
         return $retval;
     }
 
-    public static function isAvail()
-    {
+    public static function isAvail() {
         $retval = false;
         $output = [];
         $exit_code = 0;
