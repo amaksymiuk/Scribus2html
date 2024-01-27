@@ -136,7 +136,8 @@
                     // check file version: at least 1.4.6 required
                     if ($this->xml->name == 'SCRIBUSUTF8NEW') {
                         $ver = explode('.', $this->xml->getAttribute('Version'));
-                        if (($ver[0] < 1) || ($ver[1] < 4) || ($ver[2] < 6)) {
+                        $too_old = ($ver[0] < 1) || (($ver[0] == 1) && ($ver[1] < 4)) || (($ver[1] == 4) && ($ver[2] < 6));
+                        if ($too_old) {
                             echo 'Scribus file version too old (' . implode('.', $ver) . ')' . \PHP_EOL;
                             echo '... save your file as 1.4.6 or higher in order to use this tool' . \PHP_EOL;
                             echo 'Done' . \PHP_EOL;
